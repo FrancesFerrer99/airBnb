@@ -150,7 +150,7 @@ export default function PlacesFormPage() {
                         <input type="number" name="price" id="" placeholder="100" value={price} onChange={e => setPrice(e.target.value)} />
                     </div>
                 </div>
-                <button type="submit" className="primary my-4 cursor-pointer">
+                <button type="submit" className="primary my-4">
                     Save
                 </button>
             </form>

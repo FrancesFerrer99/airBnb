@@ -77,7 +77,7 @@ export default function BookingWidget({ place }) {
                     )
                 }
             </div>
-            <button className="primary mt-4 cursor-pointer" onClick={handleBooking}>
+            <button className="primary mt-4" onClick={handleBooking}>
                 Book this place
                 {
                     numberOfDays > 0 && (

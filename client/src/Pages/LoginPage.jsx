@@ -38,7 +38,7 @@ export default function LoginPage() {
                         value={password}
                         onChange={e => setPassword(e.target.value)}
                     />
-                    <button className="primary hover:bg-hover cursor-pointer">Login</button>
+                    <button className="primary hover:bg-hover">Login</button>
                     <div className="text-center py-2 text-gray-500">
                         Don't have an account yet? <Link to='/register' className="underline text-black">Register now</Link>
                     </div>

@@ -36,7 +36,7 @@ export default function AccountPage() {
                 subpage === 'profile' && (
                     <div className="text-center">
                         Logged in as {user.name} ({user.email})<br />
-                        <button className="primary max-w-sm mt-2 cursor-pointer" onClick={logout}>Logout</button>
+                        <button className="primary max-w-sm mt-2" onClick={logout}>Logout</button>
                     </div>
                 )
             }

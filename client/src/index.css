@@ -19,6 +19,11 @@ button.primary{
     @apply bg-primary p-2 w-full text-white rounded-2xl;
 }
 
+button,
+a {
+    cursor: pointer;
+}
+
 textarea {
     height: 240px;
 }
