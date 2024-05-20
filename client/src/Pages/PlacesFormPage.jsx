@@ -78,7 +78,8 @@ export default function PlacesFormPage() {
             })
         }
         else {
-            await axios.post('/place', placeData)
+            const rss = await axios.post('/place', placeData)
+            console.log(rss)
         }
         setRedirect(true)
     }

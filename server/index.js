@@ -20,8 +20,6 @@ const authenticateToken = require('./middleware/auth')
 
 const fs = require('fs')    //file system
 
-const placesRoutes = require('./routes/placeRoutes')
-
 //These are necessary for the database. the first one allows us to use mongoose (connect to the db, send data, receive data etc)
 //the others are the models used to define the structure of the documents in our db
 const { default: mongoose } = require('mongoose')
@@ -41,8 +39,6 @@ app.use(cookieParser())
 //we're creating a virtual path prefix to be able to serve files in the path specified in the static method as if we were accessing the page uploads
 app.use('/uploads', express.static(__dirname + '/uploads'))
 
-app.use('/place', placesRoutes)
-
 //salt is a random piece of data of x lenght (x is the parameter) that is used to create a unique HASH code to encrypt
 //We'll be using JWT to maintain sessions
 const bCryptSalt = bcrypt.genSaltSync(10)
@@ -51,6 +47,8 @@ const bCryptSalt = bcrypt.genSaltSync(10)
 app.use(cors({
     credentials: true,
     origin: 'http://localhost:5173',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
 }))
 
 //connection to the db
@@ -138,6 +136,22 @@ app.post('/booking', authenticateToken, async (req, res) => {
     }
 })
 
+app.post('/place', authenticateToken, async (req, res) => {
+    const { title, address, photos, description, perks, extraInfo, checkIn, checkOut, maxGuests, price } = req.body
+    const data = req.data
+    try {
+        const placeDoc = await PlaceModel.create({
+            owner: data.id, title, address,
+            description, perks, photos, extraInfo,
+            checkIn, checkOut, maxGuests,
+            price
+        })
+        res.status(201).json(placeDoc)
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
 /* GET REQUESTS */
 app.get('/profile', authenticateToken, async (req, res) => {
     const data = req.data
@@ -166,6 +180,50 @@ app.get('/bookings', authenticateToken, async (req, res) => {
     const data = req.data
     try {
         res.status(200).json(await BookingModel.find({ user: data.id }).populate('place')) //populate will fill the 'place' field with data taken from the PlaceModel that corresponds with the place id
+    } catch (error) {
+        res.status(500).json(error)
+    }
+})
+
+app.get('/place/:id', async (req, res) => {
+    const { id } = req.params
+    res.json(await PlaceModel.findById(id)).status(200)
+})
+
+/* PUT REQUESTS */
+app.put('/place', authenticateToken, async (req, res) => {
+    const {
+        id,
+        title,
+        address,
+        photos,
+        description,
+        perks,
+        extraInfo,
+        checkIn,
+        checkOut,
+        maxGuests,
+        price
+    } = req.body
+    const data = req.data
+    try {
+        const placeDoc = await PlaceModel.findById(id)
+        if (data.id === placeDoc.owner.toString()) {
+            placeDoc.set({
+                title,
+                address,
+                description,
+                perks,
+                photos,
+                extraInfo,
+                checkIn,
+                checkOut,
+                maxGuests,
+                price
+            })
+            await placeDoc.save()
+            res.status(200).json('ok')
+        }
     } catch (error) {
         res.status(500).json(error)
     }
